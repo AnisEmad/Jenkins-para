@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    }
     parameters {
         choice(
             name: 'WORKSPACE',
@@ -18,20 +22,24 @@ pipeline {
 
         stage ('Terraform init') {
             steps {
+               {
                 sh 'terraform init'
             }
         }
         stage ('Select Or Create workspaces') {
+           
             steps {
                 sh 'terraform workspace select ${WORKSPACE} || terraform workspace new ${WORKSPACE}'
             }
         }
         stage ('Terraform plan') {
+           
             steps {
                 sh 'terraform plan'
             }
         }
         stage ('Terraform apply') {
+           
             input message: "Apply to ${WORKSPACE}"
             sh "terraform apply --var-file env/${WORKSPACE}.tfvars
     }
