@@ -14,6 +14,16 @@ pipeline {
     }
 
     stages {
+        stage('Install Terraform') {
+            steps {
+                sh '''
+                    wget -O terraform.zip https://releases.hashicorp.com/terraform/1.9.0/terraform_1.9.0_linux_amd64.zip
+                    unzip -o terraform.zip
+                    mv terraform /usr/local/bin/terraform
+                    terraform version
+                '''
+            }
+        }
         stage ('checkout code') {
             steps {
                 checkout scm
