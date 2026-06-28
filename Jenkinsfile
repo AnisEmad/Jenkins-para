@@ -5,6 +5,7 @@ pipeline {
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
+
     parameters {
         choice(
             name: 'WORKSPACE',
@@ -14,39 +15,44 @@ pipeline {
     }
 
     stages {
-        stage ('checkout code') {
+        stage('Checkout code') {
             steps {
                 checkout scm
             }
         }
 
-        stage ('Terraform init') {
+        stage('Terraform Init') {
             steps {
                 sh 'terraform init'
             }
         }
-        stage ('Select Or Create workspaces') {
-           
+
+        stage('Select or Create Workspace') {
             steps {
                 sh 'terraform workspace select ${WORKSPACE} || terraform workspace new ${WORKSPACE}'
             }
         }
-        stage ('Terraform plan') {
-           
+
+        stage('Terraform Plan') {
             steps {
                 sh 'terraform plan'
             }
         }
-        stage ('Approval') {
-            steps{
-                input message: "apply to ${WORKSPACE}?"
+
+        stage('Approval') {
+            steps {
+                script {
+                    input message: "Apply to ${params.WORKSPACE}?"
+                }
             }
         }
-        stage ('Terraform apply') {
-           steps{
-             sh 'terraform apply --var-file="env/${WORKSPACE}.tfvars"'
-           }
+
+        stage('Terraform Apply') {
+            steps {
+                sh 'terraform apply -var-file="envs/${WORKSPACE}.tfvars"'
+            }
         }
+    }
 
     post {
         failure {
