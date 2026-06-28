@@ -37,11 +37,16 @@ pipeline {
                 sh 'terraform plan'
             }
         }
+        stage ('Approval') {
+            steps{
+                input message: "apply to ${WORKSPACE}?"
+            }
+        }
         stage ('Terraform apply') {
-           
-            input message: "Apply to ${WORKSPACE}"
-            sh 'terraform apply --var-file="env/${WORKSPACE}.tfvars"'
-    }
+           steps{
+             sh 'terraform apply --var-file="env/${WORKSPACE}.tfvars"'
+           }
+        }
 
     post {
         success {
