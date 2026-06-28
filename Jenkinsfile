@@ -48,13 +48,36 @@ pipeline {
            }
         }
 
-    // post {
-    //     success {
-    //         echo 'Pipeline completed successfully!'
-    //     }
-    //     failure {
-    //         echo 'Pipeline failed!'
-    //     }
-    // }
+    post {
+        failure {
+            emailext(
+                to: 'your-email@gmail.com',
+                subject: "❌ Pipeline Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <h3>Pipeline Failed</h3>
+                    <p><b>Job:</b> ${env.JOB_NAME}</p>
+                    <p><b>Build:</b> #${env.BUILD_NUMBER}</p>
+                    <p><b>Workspace:</b> ${params.WORKSPACE}</p>
+                    <p><b>Check the logs:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                """,
+                mimeType: 'text/html'
+            )
+        }
+
+        success {
+            emailext(
+                to: 'your-email@gmail.com',
+                subject: "✅ Pipeline Succeeded: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <h3>Pipeline Succeeded</h3>
+                    <p><b>Job:</b> ${env.JOB_NAME}</p>
+                    <p><b>Build:</b> #${env.BUILD_NUMBER}</p>
+                    <p><b>Workspace:</b> ${params.WORKSPACE}</p>
+                    <p><b>Check the logs:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                """,
+                mimeType: 'text/html'
+            )
+        }
+    }
 }
 }
