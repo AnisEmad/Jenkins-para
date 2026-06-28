@@ -40,7 +40,7 @@ pipeline {
         stage ('Terraform apply') {
            
             input message: "Apply to ${WORKSPACE}"
-            sh "terraform apply --var-file env/${WORKSPACE}.tfvars
+            sh "terraform apply --var-file="env/${WORKSPACE}.tfvars"
     }
 
     post {
