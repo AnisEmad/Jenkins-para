@@ -17,10 +17,10 @@ pipeline {
         stage('Install Terraform') {
             steps {
                 sh '''
-                    curl -Lo terraform.zip https://releases.hashicorp.com/terraform/1.9.0/terraform_1.9.0_linux_amd64.zip
-                    unzip -o terraform.zip
-                    mv terraform /usr/local/bin/terraform
-                    terraform version
+                    sudo curl -Lo terraform.zip https://releases.hashicorp.com/terraform/1.9.0/terraform_1.9.0_linux_amd64.zip
+                    sudo unzip -o terraform.zip
+                    sudo mv terraform /usr/local/bin/terraform
+                    sudo terraform version
                 '''
             }
         }
