@@ -3,24 +3,37 @@ pipeline {
 
     parameters {
         choice(
-            name: 'ENVIRONMENT',
+            name: 'WORKSPACE',
             choices: ['dev', 'stg', 'prod'],
-            description: 'Select the environment'
+            description: 'Select the workspace'
         )
     }
 
     stages {
-        stage('Hello World') {
+        stage ('checkout code') {
             steps {
-                echo "Hello World from trigger ${params.ENVIRONMENT}"
+                checkout scm
             }
         }
 
-        stage('Hello Jenkins') {
+        stage ('Terraform init') {
             steps {
-                ech "Hello Jenkins from ${params.ENVIRONMENT}"
+                sh 'terraform init'
             }
         }
+        stage ('Select Or Create workspaces') {
+            steps {
+                sh 'terraform workspace select ${WORKSPACE} || terraform workspace new ${WORKSPACE}'
+            }
+        }
+        stage ('Terraform plan') {
+            steps {
+                sh 'terraform plan'
+            }
+        }
+        stage ('Terraform apply') {
+            input message: "Apply to ${WORKSPACE}"
+            sh "terraform apply --var-file env/${WORKSPACE}.tfvars
     }
 
     post {
