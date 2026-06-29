@@ -82,7 +82,6 @@ pipeline {
                     <p><b>Check the logs:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
                 """,
                 mimeType: 'text/html'
-                
             )
         }
     }
